@@ -19,6 +19,10 @@ namespace Practice
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+            .ConfigureAppConfiguration((webHostBuilder, configurationBinder) =>
+            {
+                configurationBinder.AddJsonFile("settings.json", optional: true);
+            })
+           .UseStartup<Startup>();
     }
 }

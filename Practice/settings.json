@@ -1,0 +1,7 @@
+{
+  "ConnectionStrings": {
+    //"DefaultConnection": "Server=(LocalDB)\MSSQLLocalDB;Database=MyWebsite;"
+    "DefaultConnection": "Server=DESKTOP-AQ2FQ3N;Database=kingston_db;Trusted_Connection=FALSE;User ID=kingston;Password=kingston;" //使用SQL server驗證
+    //"DefaultConnection": "Server=DESKTOP-AQ2FQ3N;Database=Practice;Trusted_Connection=True;" //使用windows驗證
+  }
+}
