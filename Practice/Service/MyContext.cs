@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Practice.Models;
 
 namespace Practice.Service
 {
@@ -11,5 +12,6 @@ namespace Practice.Service
         public MyContext(DbContextOptions<MyContext> options) : base(options)
         {
         }
+        public DbSet<Practice.Models.USERS> USERS { get; set; }
     }
 }

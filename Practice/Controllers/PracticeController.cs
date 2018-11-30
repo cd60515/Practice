@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Practice.Service;
 
 namespace Practice.Controllers
 {
@@ -11,6 +12,11 @@ namespace Practice.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        public void insert()
+        {
+
         }
     }
 }
