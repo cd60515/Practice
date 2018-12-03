@@ -14,18 +14,19 @@ namespace Practice.Controllers
     {
         private readonly MyContext _context;
 
+        //建構子，建立DB連線
         public USERSController(MyContext context)
         {
             _context = context;
         }
 
-        // GET: USERS
+        //USER首頁
         public async Task<IActionResult> Index()
         {
             return View(await _context.USERS.ToListAsync());
         }
 
-        // GET: USERS/Details/5
+        //查詢USER
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -43,15 +44,13 @@ namespace Practice.Controllers
             return View(uSERS);
         }
 
-        // GET: USERS/Create
+        //回傳建立USER頁面
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: USERS/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //建立USER的動作
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,NAME,PWD")] USERS uSERS)
@@ -65,7 +64,7 @@ namespace Practice.Controllers
             return View(uSERS);
         }
 
-        // GET: USERS/Edit/5
+        //回傳編輯User頁面
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -81,9 +80,7 @@ namespace Practice.Controllers
             return View(uSERS);
         }
 
-        // POST: USERS/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //編輯User的動作
         [HttpPost]
         [ValidateAntiForgeryToken] //用來防止其他的網站可能偽造request，所以在對應的View上必須要有Html.AntiForgeryToken()
         public async Task<IActionResult> Edit(string id, [Bind("ID,NAME,PWD")] USERS uSERS)
@@ -116,7 +113,7 @@ namespace Practice.Controllers
             return View(uSERS);
         }
 
-        // GET: USERS/Delete/5
+        //回傳刪除User的頁面
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -134,7 +131,7 @@ namespace Practice.Controllers
             return View(uSERS);
         }
 
-        // POST: USERS/Delete/5
+        //刪除User的動作
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -145,6 +142,7 @@ namespace Practice.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        //判斷User是否已存在
         private bool USERSExists(string id)
         {
             return _context.USERS.Any(e => e.ID == id);

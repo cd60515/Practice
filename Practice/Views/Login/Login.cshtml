@@ -1,26 +1,108 @@
 ﻿@model Practice.Models.USERS
 
-@{
-    ViewData["Title"] = "Login";
-}
-
-<h2>Login</h2>
-@*<form action="@Url.Action("Login", "Login")" method="post">*@
-<form asp-action="Login">
-    <div class="form-group">
-        <label asp-for="NAME" class="control-label"></label>
-        <input asp-for="NAME" class="form-control" />
-        <span asp-validation-for="NAME" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="PWD" class="control-label"></label>
-        <input asp-for="PWD" type="password" class="form-control" />
-        <span asp-validation-for="PWD" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Login" class="btn btn-default"/>
-    </div>
+@*<form action="@Url.Action("Login", "Login")" method="post"> 另一種寫法*@
+    @*<div class="form-group">
+            <label asp-for="NAME" class="control-label"></label>
+            <input asp-for="NAME" class="form-control" />
+            <span asp-validation-for="NAME" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PWD" class="control-label"></label>
+            <input asp-for="PWD" type="password" class="form-control" />
+            <span asp-validation-for="PWD" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Login" class="btn btn-default" />
+        </div>*@
     @*<input type="text" id="USER" name="ID">帳號：</input>
         <input type="password" id="PWD" name="PWD">密碼：</input>*@
     @*<input type="submit">登入</input>*@
-</form>
+
+    <div id="login_panel">
+        <v-app id="inspire">
+            <v-content>
+                <v-container fluid fill-height>
+                    <v-layout align-center justify-center>
+                        <v-flex xs12 sm8 md4>
+                            <v-card class="elevation-12">
+                                <v-toolbar dark color="primary">
+                                    <v-toolbar-title>Login form</v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                </v-toolbar>
+                                <v-card-text>
+                                    <v-form>
+                                        <v-text-field v-model="ID" prepend-icon="person" label="Login" type="text"></v-text-field>
+                                        <v-text-field v-model="PWD" prepend-icon="lock" label="Password" type="password"></v-text-field>
+                                        <v-alert :value=show_error type="error"> {{error_msg}} </v-alert>
+                                        @*<v-text-field prepend-icon="person" name="NAME" label="Login" type="text"></v-text-field>
+        <v-text-field prepend-icon="lock" name="PWD" label="Password" id="password" type="password"></v-text-field>*@
+                                    </v-form>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <div id="btn">
+                                        <v-btn color="primary" v-on:click.native="login_method">Login</v-btn>
+                                    </div>
+                                </v-card-actions>
+                            </v-card>
+                        </v-flex>
+                    </v-layout>
+                </v-container>
+            </v-content>
+        </v-app>
+    </div>
+    <router-link tag="li" to="http://google.com.tw/">
+        <a>/foo</a>
+    </router-link>
+    <script type="text/javascript">
+    //$(function () { });
+    const router = new VueRouter({
+        routes: [
+            {
+                path: "http://google.com.tw/"//"@*@Url.Action("Index", "USERS")*@"
+                //, redirect: '/redir'
+            }
+        ]
+    });
+
+    new Vue({
+        el: '#login_panel',
+        data: () => ({
+            drawer: null,
+            ID: "",
+            PWD: "",
+            show_error: false,
+            error_msg:""
+        }),
+        props: {
+            source: String
+        },
+        methods:
+        {
+            login_method: function () {
+                //发送 post 请求
+                this.$http.post('http://localhost/Practice_dvp/Login/Login/', { ID: this.ID, PWD: this.PWD }, { emulateJSON: true }).then(this.successCallback, this.errorCallback);
+            },
+            successCallback: function (res) {
+                debugger;
+                //將回傳的Json字串轉為Object
+                var rtn = $.parseJSON(res.bodyText);
+                console.log("success");
+
+                //依照判斷的結果做出回應
+                if (rtn.result == true) {
+                    //router.go(); //原本要用VueRouter導轉頁面，但尚未成功
+                    location.href = "@Url.Action("Index", "DIARies")";
+                }
+                else {
+                    this.show_error = true;
+                    this.error_msg = "Password Error or Account not exists.";
+                }
+            },
+            errorCallback: function (res) {
+                console.log("error");
+                this.error_msg = "Login System Error! Please contact IT.";
+            }
+        }
+    })
+    </script>

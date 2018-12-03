@@ -11,7 +11,7 @@ namespace Practice.Models
 {
     public class USERS
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public string ID { get; set; }
         public string NAME { get; set; }
         public string PWD { get; set; }
@@ -19,16 +19,11 @@ namespace Practice.Models
 
     public class DIARY
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public string USER_ID { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string DIARY_ID { get; set; }
         public DateTime DIARY_DATE { get; set; }
         public string DIARY_TEXT { get; set; }
     }
-    //public class MyContext : DbContext
-    //{
-    //    public MyContext(DbContextOptions<MyContext> options) : base(options) { }
-    //    public DbSet<USERS> USERS { get; set; }
-    //    public DbSet<USERS> DIARY { get; set; }
-    //}
 }
