@@ -1,0 +1,189 @@
+﻿
+@{
+    ViewData["Title"] = "DIARY_Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div id="write_app">
+    <v-app id="write">
+        <v-content>
+            <v-container fluid>
+                <v-layout row>
+                    <v-flex xs6>
+                        <v-date-picker v-model="picker" :landscape="true"></v-date-picker>
+                    </v-flex>
+                    <v-layout column>
+                        <v-flex xs12>
+                            <v-text-field label="Title" v-model=diary_title box></v-text-field>
+                            <v-textarea outline name="diary" label="隨手記" placeholder="在想些甚麼..." v-model=diary_text></v-textarea>
+                            <v-layout justify-end row>
+                                <v-btn color="primary" v-on:click.native="Insert_DIARY">Insert</v-btn>
+                            </v-layout>
+                        </v-flex>
+                    </v-layout>
+                </v-layout>
+            </v-container>
+        </v-content>
+    </v-app>
+</div>
+
+<div id="card_app">
+    <v-app id="card">
+        <v-btn color="success" v-on:click.native="Get_DIARY" id="btn_query">查詢</v-btn>
+        <v-expansion-panel v-model="panel" expand>
+            <v-expansion-panel-content v-for="(item, key, index) in card_text" :key="index" v-bind:todo="item">
+                <div slot="header">{{item.DIARY_TITLE}}</div>
+                @*<v-text-field v-show=modify_show label="Title" v-model=diary_title box>{{item.DIARY_TITLE}}</v-text-field>*@ @*//Title先不給修改*@
+
+                <v-card round>
+                    <v-card-text v-show=!modify_show>{{item.DIARY_TEXT}}</v-card-text>
+                    <v-textarea v-show=modify_show outline name="diary" label="日記修改" v-model=diary_text>{{item.DIARY_TEXT}}</v-textarea>
+                    <v-btn v-show=!modify_show color="warning" v-on:click.native="Modify_LAYOUT($event,item)">修改</v-btn>
+                    <v-btn v-show=modify_show color="warning" v-on:click.native="Modify_DIARY($event,item)">送出修改</v-btn>
+                    @*<v-btn color="error" v-on:click.native="Delete_DIARY($event,item)">刪除</v-btn>*@ @*後續為了做出跳窗這段就註解了*@
+                    <v-dialog v-model="dialog" width="500">
+                        <v-btn slot="activator" color="error" v-on:click.native="Delete_CHECK(item)">刪除</v-btn>
+                        <v-card>
+                            <v-card-title class="headline grey lighten-2" primary-title>Waning</v-card-title>
+                            <v-card-text>確定要刪除這篇日記?</v-card-text>
+                            <v-divider></v-divider>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="primary" flat v-on:click.native="Delete_DIARY($event,item)">確定刪除</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+                </v-card>
+            </v-expansion-panel-content>
+        </v-expansion-panel>
+    </v-app>
+</div>
+
+<script>
+    //Vue.component('runoob', {
+    //    template: '<h1>自定义组件!</h1>'
+    //})
+
+    //建立日記App
+    new Vue({
+        el: '#write',
+        data: {
+            picker: new Date().toISOString().substr(0, 10),
+            diary_text: "",
+            diary_title: "",
+            card_diable: false
+        },
+        methods:
+        {
+            //1. 建立日記
+            Insert_DIARY: function () {
+                //送出POST請求
+                this.$http.post('http://localhost/Practice_dvp/DIARY/Insert_DIARY', { DIARY_TITLE: this.diary_title, DIARY_TEXT: this.diary_text, USER_ID: $.cookie("USER_ID"), DIARY_DATE: this.picker }, { emulateJSON: true }).then(this.Insert_successCallback, this.errorCallback);
+            },
+
+            //2. 建立日記成功後要做的動作
+            Insert_successCallback: function (res) {
+                //建立日記完成後清空輸入框
+                this.diary_title = "";
+                this.diary_text = "";
+
+                $("#btn_query").click(); //重新查詢
+            }
+        }
+    })
+
+
+    //展出與修改日記
+    new Vue({
+        el: '#card',
+        data: {
+            card_text: "",      //所有日記的集合
+            SEARCH_DATE: new Date().toISOString().substr(0, 10), //打算要用來當作查詢條件，目前還沒用到
+            diary_title: "",    //修改日記的title, 不過這邊沒用上
+            diary_text: "",     //修改日記內容
+            diary_id:"",        //用來暫時存放日記的ID
+            modify_show: false, //判斷是否已按下修改按鈕
+            dialog: false,      //判斷是否要顯示dialog
+            panel: [],          //
+        },
+        props: ['todo'],
+        methods:
+        {
+            //1. 抓取日記
+            Get_DIARY: function () {
+                //送出POST請求
+                this.$http.post('http://localhost/Practice_dvp/DIARY/Get_DIARY', { SEARCH_DATE: this.SEARCH_DATE }, { emulateJSON: true }).then(this.Get_successCallback, this.errorCallback);
+            },
+
+            //2. 按下修改按鈕之後要做的動作
+            Modify_LAYOUT: function (event, item) {
+                //this.diary_title = item.DIARY_TITLE //將文字帶到text field中
+                this.diary_text = item.DIARY_TEXT; //將文字帶到text area中
+                this.modify_show = !this.modify_show; //toggle 修改時要顯示或隱藏的元件
+            },
+
+            //3. 修改日記
+            Modify_DIARY: function (event, item) {
+                debugger;
+                this.modify_show = !this.modify_show; //toggle 修改時要顯示或隱藏的元件
+                item.DIARY_TEXT = this.diary_text;
+                //送出POST請求
+                this.$http.post('http://localhost/Practice_dvp/DIARY/Modify_DIARY', item, { emulateJSON: true }).then(this.Modify_successCallback, this.errorCallback);
+            },
+
+            //4. 刪除日記
+            Delete_DIARY: function (event, item) {
+                debugger;
+                this.dialog = false;
+                //送出POST請求
+                this.$http.post('http://localhost/Practice_dvp/DIARY/Delete_DIARY', { DIARY_ID: this.diary_id, USER_ID: $.cookie("USER_ID") }, { emulateJSON: true }).then(this.Insert_successCallback, this.errorCallback);
+            },
+
+            //5. 抓取日記成功後要做的動作
+            Get_successCallback: function (res) {
+                //將回傳的Json字串轉為Object
+                var get_result = $.parseJSON(res.bodyText);
+                console.log("success");
+
+                //把Object綁訂到card_text上
+                this.card_text = $.makeArray(get_result.rtn);
+
+                //收合所有Panel
+                this.close_panel();
+            },
+
+            //6. 修改日記成功後要做的動作
+            Modify_successCallback: function (res) {
+
+                console.log("success");
+            },
+
+            //6. 刪除日記成功後要做的動作
+            Insert_successCallback: function (res) {
+                $("#btn_query").click(); //重新查詢
+            },
+
+            //7. 展開所有Panel
+            expand_panel() {
+                this.panel = [...Array(this.items).keys()].map(_ => true)
+            },
+
+            //8. 閉合所有Panel
+            close_panel() {
+                debugger;
+                this.panel = []
+            },
+
+            //9. 按下第一個DELETE按鈕時，要先記住DIARY_ID (之所以要這個function去紀錄ID，是因為沒辦法直接讓dialog裡面的按鈕正常接收到expand panel中的item)
+            Delete_CHECK: function (item) { this.diary_id = item.DIARY_ID; },
+
+            //發生錯誤時log error
+            errorCallback: function (res) {
+                console.log("error");
+            }
+        }
+    });
+
+</script>
+

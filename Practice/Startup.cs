@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Practice.Service;
 
 namespace Practice
@@ -40,6 +41,9 @@ namespace Practice
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();
+            services.AddAuthentication().AddCookie();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,10 +67,9 @@ namespace Practice
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Login}/{action=Login}/{id?}");
-        //template: "{controller=Home}/{action=Index}/{id?}");
-        });
-
+                    template: "{controller=DIARY}/{action=DIARY_Index}/{id?}");
+                //template: "{controller=Home}/{action=Index}/{id?}");
+            });
 
             // 確保資料庫有建立
             dbContext.Database.EnsureCreated();

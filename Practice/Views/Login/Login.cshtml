@@ -35,7 +35,7 @@
                                         <v-text-field v-model="PWD" prepend-icon="lock" label="Password" type="password"></v-text-field>
                                         <v-alert :value=show_error type="error"> {{error_msg}} </v-alert>
                                         @*<v-text-field prepend-icon="person" name="NAME" label="Login" type="text"></v-text-field>
-        <v-text-field prepend-icon="lock" name="PWD" label="Password" id="password" type="password"></v-text-field>*@
+                                          <v-text-field prepend-icon="lock" name="PWD" label="Password" id="password" type="password"></v-text-field>*@
                                     </v-form>
                                 </v-card-text>
                                 <v-card-actions>
@@ -80,17 +80,17 @@
         methods:
         {
             login_method: function () {
-                //发送 post 请求
+                //送出POST請求
                 this.$http.post('http://localhost/Practice_dvp/Login/Login/', { ID: this.ID, PWD: this.PWD }, { emulateJSON: true }).then(this.successCallback, this.errorCallback);
             },
             successCallback: function (res) {
                 debugger;
                 //將回傳的Json字串轉為Object
-                var rtn = $.parseJSON(res.bodyText);
+                var get_result = $.parseJSON(res.bodyText);
                 console.log("success");
-
+                debugger;
                 //依照判斷的結果做出回應
-                if (rtn.result == true) {
+                if (get_result.rtn.result == true) {
                     //router.go(); //原本要用VueRouter導轉頁面，但尚未成功
                     location.href = "@Url.Action("Index", "DIARies")";
                 }

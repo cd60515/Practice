@@ -1,0 +1,54 @@
+﻿@model Practice.Models.DIARY
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+
+<h4>DIARY</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="USER_ID" class="control-label"></label>
+                <input asp-for="USER_ID" class="form-control" />
+                <span asp-validation-for="USER_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DIARY_TITLE" class="control-label"></label>
+                <input asp-for="DIARY_TITLE" class="form-control" />
+                <span asp-validation-for="DIARY_TITLE" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DIARY_DATE" class="control-label"></label>
+                <input asp-for="DIARY_DATE" class="form-control" />
+                <span asp-validation-for="DIARY_DATE" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DIARY_TEXT" class="control-label"></label>
+                <input asp-for="DIARY_TEXT" class="form-control" />
+                <span asp-validation-for="DIARY_TEXT" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WEATHER" class="control-label"></label>
+                <input asp-for="WEATHER" class="form-control" />
+                <span asp-validation-for="WEATHER" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

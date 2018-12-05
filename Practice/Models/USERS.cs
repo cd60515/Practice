@@ -21,9 +21,20 @@ namespace Practice.Models
     {
         [Key]
         public string USER_ID { get; set; }
+
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string DIARY_ID { get; set; }
-        public DateTime DIARY_DATE { get; set; }
+
+        [Display(Description = "標題")]
+        public string DIARY_TITLE { get; set; }
+
+        [Display(Description ="日期")]
+        public string DIARY_DATE { get; set; }
+
+        [Display(Description = "日記內容")]
         public string DIARY_TEXT { get; set; }
+
+        [Display(Description = "天氣")]
+        public string WEATHER { get; set; }
     }
 }

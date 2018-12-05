@@ -14,17 +14,18 @@ namespace Practice.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly MyContext _context;
+        private readonly MyContext _dbcontext;
 
         //建構子，建立DB連線
         public LoginController(MyContext context)
         {
-            _context = context;
+            _dbcontext = context;
         }
 
         //回傳Login頁面
         public IActionResult Login()
         {
+            HttpContext.Response.Cookies.Delete("USER_ID");
             return View();
         }
 
@@ -33,6 +34,7 @@ namespace Practice.Controllers
         public IActionResult Login(USERS user)
         {
             Hashtable rtn = null; //先宣告一個空的hash table等一下儲存結果用
+            
 
             //如果驗證成功，跳轉到主畫面
             if (ModelState.IsValid && LoginCheck(user))
@@ -44,6 +46,9 @@ namespace Practice.Controllers
                     { "userid", user.ID },
                     { "result", true }
                 };
+
+                //將USER_ID加入至cookie
+                HttpContext.Response.Cookies.Append("USER_ID", user.ID);
             }
             else //若失敗
             {
@@ -57,14 +62,14 @@ namespace Practice.Controllers
             }
 
             //return Json(user);
-            return Content(JsonConvert.SerializeObject(new {result = rtn}), "application/json");
+            return Content(JsonConvert.SerializeObject(new {rtn = rtn}), "application/json");
         }
 
         //User身分驗證
         public bool LoginCheck(USERS user)
         {
             //確認是否有該User存在
-            var login_user = _context.USERS.FirstOrDefaultAsync(x => x.ID == user.ID & x.PWD == user.PWD).Result;
+            var login_user = _dbcontext.USERS.FirstOrDefaultAsync(x => x.ID == user.ID & x.PWD == user.PWD).Result;
             if (login_user != null)
             { return true; }
             else
