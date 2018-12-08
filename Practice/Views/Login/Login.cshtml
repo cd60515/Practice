@@ -92,7 +92,7 @@
                 //依照判斷的結果做出回應
                 if (get_result.rtn.result == true) {
                     //router.go(); //原本要用VueRouter導轉頁面，但尚未成功
-                    location.href = "@Url.Action("Index", "DIARies")";
+                    location.href = "@Url.Action("DIARY_Index", "DIARY")";
                 }
                 else {
                     this.show_error = true;

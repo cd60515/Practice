@@ -13,11 +13,13 @@ namespace Practice.Controllers
     public class USERSController : Controller
     {
         private readonly MyContext _context;
+        private readonly Cipher _cipher;
 
         //建構子，建立DB連線
-        public USERSController(MyContext context)
+        public USERSController(MyContext context, Cipher cipher)
         {
             _context = context;
+            _cipher = cipher;
         }
 
         //USER首頁
@@ -55,6 +57,8 @@ namespace Practice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,NAME,PWD")] USERS uSERS)
         {
+            uSERS.PWD = _cipher.GetMD5(uSERS.PWD); //用MD5加密
+
             if (ModelState.IsValid)
             {
                 _context.Add(uSERS);
@@ -85,6 +89,8 @@ namespace Practice.Controllers
         [ValidateAntiForgeryToken] //用來防止其他的網站可能偽造request，所以在對應的View上必須要有Html.AntiForgeryToken()
         public async Task<IActionResult> Edit(string id, [Bind("ID,NAME,PWD")] USERS uSERS)
         {
+            uSERS.PWD = _cipher.GetMD5(uSERS.PWD); //用MD5加密
+
             if (id != uSERS.ID)
             {
                 return NotFound();

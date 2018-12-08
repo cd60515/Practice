@@ -44,10 +44,11 @@ namespace Practice
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddHttpContextAccessor();
             services.AddAuthentication().AddCookie();
+            services.TryAddSingleton(typeof(Cipher));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, MyContext dbContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, MyContext dbContext, Cipher cipher)
         {
             if (env.IsDevelopment())
             {
@@ -67,7 +68,7 @@ namespace Practice
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=DIARY}/{action=DIARY_Index}/{id?}");
+                    template: "{controller=LOGIN}/{action=LOGIN}/{id?}");
                 //template: "{controller=Home}/{action=Index}/{id?}");
             });
 

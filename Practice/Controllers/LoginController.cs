@@ -9,17 +9,21 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Web;
 using System.Collections;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Practice.Controllers
 {
     public class LoginController : Controller
     {
         private readonly MyContext _dbcontext;
+        private readonly Cipher _cipher;
 
         //建構子，建立DB連線
-        public LoginController(MyContext context)
+        public LoginController(MyContext context, Cipher cipher)
         {
             _dbcontext = context;
+            _cipher = cipher;
         }
 
         //回傳Login頁面
@@ -69,11 +73,13 @@ namespace Practice.Controllers
         public bool LoginCheck(USERS user)
         {
             //確認是否有該User存在
-            var login_user = _dbcontext.USERS.FirstOrDefaultAsync(x => x.ID == user.ID & x.PWD == user.PWD).Result;
+            var login_user = _dbcontext.USERS.FirstOrDefaultAsync(x => x.ID == user.ID & x.PWD == _cipher.GetMD5(user.PWD)).Result;
             if (login_user != null)
             { return true; }
             else
             { return false; }
         }
+
+
     }
 }
