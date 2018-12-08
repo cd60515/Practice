@@ -51,19 +51,19 @@
             </v-content>
         </v-app>
     </div>
-    <router-link tag="li" to="http://google.com.tw/">
+    @*<router-link tag="li" to="http://google.com.tw/">
         <a>/foo</a>
-    </router-link>
+    </router-link>*@
     <script type="text/javascript">
     //$(function () { });
-    const router = new VueRouter({
+    @*const router = new VueRouter({
         routes: [
             {
-                path: "http://google.com.tw/"//"@*@Url.Action("Index", "USERS")*@"
+                path: "http://google.com.tw/"//"@Url.Action("Index", "USERS")"
                 //, redirect: '/redir'
             }
         ]
-    });
+    });*@
 
     new Vue({
         el: '#login_panel',
@@ -71,24 +71,31 @@
             drawer: null,
             ID: "",
             PWD: "",
-            show_error: false,
-            error_msg:""
+            show_error: false, //用來決定是否顯示alert
+            error_msg:""       //錯誤訊息
         }),
-        props: {
-            source: String
-        },
+        //props: {
+        //    source: String
+        //},
         methods:
         {
+            //呼叫登入動作
             login_method: function () {
                 //送出POST請求
                 this.$http.post('http://localhost/Practice_dvp/Login/Login/', { ID: this.ID, PWD: this.PWD }, { emulateJSON: true }).then(this.successCallback, this.errorCallback);
+
+
+                //emulateJSON(布尔值)
+                //默认值为：false, 当值为true并且data为对象时，设置请求头Content - Type的值为application / x - www - form - urlencoded
+                //如果服务器无法处理编码为application / json的请求，可以启用emulateJSON选项。启用之后，请求会以application / x - www - form - urlencoded为MIME type，就像普通的HTML表单一样。
             },
+
+            //當呼叫登入action成功的時候要執行的動作
             successCallback: function (res) {
-                debugger;
                 //將回傳的Json字串轉為Object
                 var get_result = $.parseJSON(res.bodyText);
                 console.log("success");
-                debugger;
+
                 //依照判斷的結果做出回應
                 if (get_result.rtn.result == true) {
                     //router.go(); //原本要用VueRouter導轉頁面，但尚未成功
@@ -99,7 +106,10 @@
                     this.error_msg = "Password Error or Account not exists.";
                 }
             },
+
+            //當呼叫登入action失敗的時候要執行的動作
             errorCallback: function (res) {
+                this.show_error = true;
                 console.log("error");
                 this.error_msg = "Login System Error! Please contact IT.";
             }
