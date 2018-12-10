@@ -19,7 +19,7 @@
                             <v-text-field label="天氣" v-model=weather box></v-text-field>
                             <v-textarea outline name="diary" label="隨手記" placeholder="在想些甚麼..." v-model=diary_text></v-textarea>
                             <v-layout justify-end row>
-                                <v-btn color="primary" v-on:click.native="Insert_DIARY">Insert</v-btn>
+                                <v-btn color="primary" v-on:click.native="Insert_DIARY">寫日記</v-btn>
                             </v-layout>
                         </v-flex>
                     </v-layout>
@@ -116,7 +116,7 @@
             },
 
             //4. 抓到Yahoo天氣資料之後要做的事情
-            Get_weather_successCallback: function (res,picker) {
+            Get_weather_successCallback: function (res) {
 
                 //抓出未來10天的天氣
                 var forecast = res.body.query.results.channel.item.forecast;
@@ -176,7 +176,7 @@
             //1. 抓取日記
             Get_DIARY: function () {
                 //送出POST請求
-                this.$http.post('http://localhost/Practice_dvp/DIARY/Get_DIARY', { SEARCH_DATE: this.SEARCH_DATE, USER_ID: $.cookie("USER_ID") }, { emulateJSON: true }).then(this.Get_successCallback, this.errorCallback);
+                this.$http.post('http://localhost/Practice_dvp/DIARY/Get_DIARY2', { SEARCH_DATE: this.SEARCH_DATE, USER_ID: $.cookie("USER_ID") }, { emulateJSON: true }).then(this.Get_successCallback, this.errorCallback);
             },
 
             //2. 按下修改按鈕之後要做的動作

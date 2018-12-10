@@ -30,7 +30,18 @@ namespace Practice.Controllers
         //回傳日記頁面
         public IActionResult DIARY_Index()
         {
-            return View();
+            //先抓出USER_ID的Cookie，若沒有值，先導引到登入介面
+            string USER_ID = null;
+            HttpContext.Request.Cookies.TryGetValue("USER_ID",out USER_ID);
+            
+            if (String.IsNullOrEmpty(USER_ID))
+            {
+                return RedirectToAction("Login", "Login");
+            }
+            else
+            { return View(); }
+
+
         }
 
         //抓取日記資料
